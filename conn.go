@@ -1114,6 +1114,12 @@ func (cn *conn) ssl(o values) error {
 		return nil
 	}
 
+	cn.c, err = upgrade(cn.c)
+	if err != nil {
+		return err
+	}
+	return nil
+
 	w := cn.writeBuf(0)
 	w.int32(80877103)
 	if err = cn.sendStartupPacket(w); err != nil {
@@ -1129,8 +1135,6 @@ func (cn *conn) ssl(o values) error {
 	if b[0] != 'S' {
 		return ErrSSLNotSupported
 	}
-
-	cn.c, err = upgrade(cn.c)
 	return err
 }
 
